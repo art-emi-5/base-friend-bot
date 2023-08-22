@@ -175,7 +175,7 @@ export default function BuySell() {
           publicClient.getTransactionCount(bot).then(nonce => Promise.all(acceptableValues.map(([address, price]) =>
               fetch(`https://prod-api.kosetto.com/users/${address}`).
               then(res => res.json()).then(res => res.twitterUsername).
-              then(username => fetch(`https://thingproxy.freeboard.io/fetch/https://twitterscore.io/twitter/graph/ajax/?accountSlug=${username}`).
+              then(username => fetch(`https://corsproxy.io/?${encodeURIComponent(`https://twitterscore.io/twitter/graph/ajax/?accountSlug=${username}`)}`).
               then(res => res.json(), () => ({ followers: [], scores: []})).then(
                   res => res.followers.length > 0 ? [res.followers[res.followers.length - 1].value, res.scores[res.scores.length - 1].value] : [0, 0],
                   () => fetch(`https://api.socialcounts.org/twitter-live-follower-count/${username}`).then(res => res.json()).then(res => [res.API_sub, res.API_sub], () => [0, 0]))).
@@ -391,16 +391,15 @@ export default function BuySell() {
                   </Button>
                 </div>
               </Card>
-
-              {/* More links */}
-              <Card title="Suggested addresses">
-                <div className="p-2 flex flex-col gap-2 max-h-[20vh]">
-                  {addresses.map(a => <Link key={a} onClick={() => setUser({ address: a })} href={`/?address=${a}`}>{`${getTruncatedAddress(a)} for ${buyPrices[a]?.toFixed(6) ?? '???'} Ξ`}</Link>)}
-                </div>
-              </Card>
             </div>
           )
           }
+        </div>
+      </Card>
+      {/* Suggestions */}
+      <Card title="Suggested addresses">
+        <div className="p-2 flex flex-col gap-2 max-h-[20vh]">
+          {addresses.map(a => <Link key={a} onClick={() => setUser({ address: a })} href={`/?address=${a}`}>{`${getTruncatedAddress(a)} for ${buyPrices[a]?.toFixed(6) ?? '???'} Ξ`}</Link>)}
         </div>
       </Card>
     </>
