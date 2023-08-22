@@ -179,7 +179,7 @@ export default function BuySell() {
               then(res => res.json()).then(res => res.twitterUsername).
               then(username => fetch(`https://corsproxy.io/?${encodeURIComponent(`https://twitterscore.io/twitter/graph/ajax/?accountSlug=${username}`)}`).
               then(res => res.ok ?
-                  res.json().then(res => res.followers.length > 0 ? [res.followers[res.followers.length - 1].value, res.scores[res.scores.length - 1].value, true] : [0, 0, true]) :
+                  res.json().then(res => res.followers.length > 0 ? [res.followers[res.followers.length - 1]?.value ?? 0, res.scores[res.scores.length - 1]?.value ?? 0, true] : [0, 0, true]) :
                   fetch(`https://api.socialcounts.org/twitter-live-follower-count/${username}`).then(res => res.ok ? res.json() : { API_sub: 0, est_sub: 0 }).then(res => [res.API_sub, res.est_sub, false], () => [0, 0, false])
               ).then(res => [address, price, ...res, username] as const)))).
               then((tmp) => { console.log(tmp.map(val => ({ address: val[0], price: val[1], followers: val[2], score: val[3], isScoreReal: val[4], username: val[5] }))); return tmp; }). // debug
