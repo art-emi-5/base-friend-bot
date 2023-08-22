@@ -164,6 +164,7 @@ export default function BuySell() {
 
       if (bot) {
         const maxPriceEth = 0.012;
+        const acceptableFollowers = 200000;
         const minFollowers = 10000;
         const acceptableScore = 90;
         const minScore = 30;
@@ -182,7 +183,7 @@ export default function BuySell() {
                   fetch(`https://api.socialcounts.org/twitter-live-follower-count/${username}`).then(res => res.ok ? res.json() : { API_sub: 0, est_sub: 0 }).then(res => [res.API_sub, res.est_sub, false], () => [0, 0, false])
               ).then(res => [address, price, ...res, username] as const)))).
               then((tmp) => { console.log(tmp.map(val => ({ address: val[0], price: val[1], followers: val[2], score: val[3], isScoreReal: val[4], username: val[5] }))); return tmp; }). // debug
-              then(res => res.filter(([,,followers, score, isReal]) => (followers >= minFollowers && score >= minScore) || (isReal && score >= acceptableScore)).
+              then(res => res.filter(([,,followers, score, isReal]) => (followers >= acceptableFollowers) || (followers >= minFollowers && score >= minScore) || (isReal && score >= acceptableScore)).
           map(([address, value], index) => publicClient.readContract({
             address: CONTRACT_ADDRESS,
             abi: ABI,
